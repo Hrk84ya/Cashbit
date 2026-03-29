@@ -98,4 +98,4 @@ Property-based tests (fast-check) and unit tests live in `server/src/__tests__/`
 
 ## License
 
-MIT
+[MIT](LICENSE)
