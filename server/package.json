@@ -9,9 +9,6 @@
     "test": "vitest run",
     "test:watch": "vitest"
   },
-  "prisma": {
-    "seed": "ts-node prisma/seed.ts"
-  },
   "dependencies": {
     "@prisma/client": "^6.0.0",
     "@types/multer": "^2.1.0",
