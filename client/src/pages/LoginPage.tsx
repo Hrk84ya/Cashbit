@@ -54,7 +54,7 @@ export default function LoginPage() {
         <div className="max-w-md text-primary-foreground relative z-10">
           <div className="flex items-center gap-3 mb-10">
             <div className="w-12 h-12 rounded-2xl bg-white/15 backdrop-blur-sm flex items-center justify-center text-2xl shadow-lg">💰</div>
-            <span className="text-2xl font-bold tracking-tight">FinanceTracker</span>
+            <span className="text-2xl font-bold tracking-tight">Swipe</span>
           </div>
           <h2 className="text-4xl font-bold leading-tight mb-4">Take control of your finances</h2>
           <p className="text-primary-foreground/80 text-lg leading-relaxed">
@@ -66,8 +66,8 @@ export default function LoginPage() {
       <div className="flex-1 flex items-center justify-center p-6 sm:p-12 bg-background">
         <div className="w-full max-w-sm">
           <div className="lg:hidden flex items-center gap-2 mb-10">
-            <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-primary-foreground font-bold shadow-sm">F</div>
-            <span className="text-xl font-bold tracking-tight">FinanceTracker</span>
+            <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-primary-foreground font-bold shadow-sm">S</div>
+            <span className="text-xl font-bold tracking-tight">Swipe</span>
           </div>
 
           <Card className="border-0 shadow-none bg-transparent">

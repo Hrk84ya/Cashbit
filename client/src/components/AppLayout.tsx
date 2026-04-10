@@ -44,9 +44,9 @@ export default function AppLayout() {
           {/* Logo */}
           <div className={cn("flex items-center h-16 border-b border-sidebar-border shrink-0", collapsed ? 'justify-center px-2' : 'px-5')}>
             <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-primary-foreground text-sm font-bold shrink-0 shadow-sm">
-              F
+              S
             </div>
-            {!collapsed && <span className="ml-3 text-base font-bold text-sidebar-foreground tracking-tight">FinanceTracker</span>}
+            {!collapsed && <span className="ml-3 text-base font-bold text-sidebar-foreground tracking-tight">Swipe</span>}
           </div>
 
           {/* Nav */}
@@ -110,9 +110,9 @@ export default function AppLayout() {
         <aside className="fixed z-50 top-0 left-0 h-full flex flex-col bg-sidebar border-r border-sidebar-border w-64 md:hidden animate-fade-in">
           <div className="flex items-center h-16 border-b border-sidebar-border px-5">
             <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-primary-foreground text-sm font-bold shrink-0 shadow-sm">
-              F
+              S
             </div>
-            <span className="ml-3 text-base font-bold text-sidebar-foreground tracking-tight">FinanceTracker</span>
+            <span className="ml-3 text-base font-bold text-sidebar-foreground tracking-tight">Swipe</span>
           </div>
           <nav className="flex-1 py-4 px-3 space-y-1 overflow-y-auto" aria-label="Main navigation">
             {navItems.map((item) => (
@@ -157,7 +157,7 @@ export default function AppLayout() {
           <Button variant="ghost" size="icon" onClick={() => setMobileOpen(true)}>
             <Menu className="h-5 w-5" />
           </Button>
-          <span className="ml-3 font-bold">FinanceTracker</span>
+          <span className="ml-3 font-bold">Swipe</span>
         </header>
         <main className="flex-1 p-4 md:p-8 overflow-auto">
           <Outlet />
