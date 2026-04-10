@@ -12,6 +12,7 @@ import budgetRoutes from './routes/budget.routes';
 import analyticsRoutes from './routes/analytics.routes';
 import profileRoutes from './routes/profile.routes';
 import uploadRoutes from './routes/upload.routes';
+import recurringRoutes from './routes/recurring.routes';
 
 const app = express();
 
@@ -29,6 +30,7 @@ app.use('/budgets', budgetRoutes);
 app.use('/analytics', analyticsRoutes);
 app.use('/profile', profileRoutes);
 app.use('/uploads', uploadRoutes);
+app.use('/recurring', recurringRoutes);
 app.use(metricsRouter);
 
 // Global error handler (must be last)

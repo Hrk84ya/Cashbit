@@ -11,6 +11,7 @@ import SpendingTrendsPage from './pages/SpendingTrendsPage';
 import BudgetManagerPage from './pages/BudgetManagerPage';
 import CategoriesPage from './pages/CategoriesPage';
 import ProfilePage from './pages/ProfilePage';
+import RecurringPage from './pages/RecurringPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 
@@ -40,6 +41,7 @@ export default function App() {
                     <Route path="/transactions" element={<TransactionListPage />} />
                     <Route path="/trends" element={<SpendingTrendsPage />} />
                     <Route path="/budgets" element={<BudgetManagerPage />} />
+                    <Route path="/recurring" element={<RecurringPage />} />
                     <Route path="/categories" element={<CategoriesPage />} />
                     <Route path="/settings" element={<ProfilePage />} />
                   </Route>

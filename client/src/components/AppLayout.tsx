@@ -3,13 +3,14 @@ import { NavLink, Outlet } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { LayoutDashboard, Receipt, TrendingUp, PiggyBank, Tags, Sun, Moon, ChevronLeft, ChevronRight, Menu, LogOut, Settings } from 'lucide-react';
+import { LayoutDashboard, Receipt, TrendingUp, PiggyBank, Tags, Sun, Moon, ChevronLeft, ChevronRight, Menu, LogOut, Settings, RefreshCw } from 'lucide-react';
 
 const navItems = [
   { to: '/', label: 'Dashboard', icon: LayoutDashboard },
   { to: '/transactions', label: 'Transactions', icon: Receipt },
   { to: '/trends', label: 'Trends', icon: TrendingUp },
   { to: '/budgets', label: 'Budgets', icon: PiggyBank },
+  { to: '/recurring', label: 'Recurring', icon: RefreshCw },
   { to: '/categories', label: 'Categories', icon: Tags },
   { to: '/settings', label: 'Settings', icon: Settings },
 ];
