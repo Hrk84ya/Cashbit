@@ -16,10 +16,13 @@ import recurringRoutes from './routes/recurring.routes';
 
 const app = express();
 
+// Trust first proxy (nginx) so rate limiter sees real client IPs
+app.set('trust proxy', 1);
+
 // Global middleware
 app.use(cors({ origin: true, credentials: true }));
 app.use(cookieParser());
-app.use(express.json());
+app.use(express.json({ limit: '1mb' }));
 app.use(metricsMiddleware);
 
 // Routes

@@ -30,7 +30,24 @@ async function generateTokens(userId: string, email: string): Promise<TokenPair>
   return { accessToken, refreshToken };
 }
 
-export async function register(email: string, name: string, password: string) {
+const DEFAULT_CATEGORY_PRESETS = [
+  { name: 'Food', icon: '🍔', color: '#EF4444' },
+  { name: 'Transport', icon: '🚗', color: '#3B82F6' },
+  { name: 'Housing', icon: '🏠', color: '#8B5CF6' },
+  { name: 'Health', icon: '💊', color: '#10B981' },
+  { name: 'Entertainment', icon: '🎬', color: '#F59E0B' },
+  { name: 'Shopping', icon: '🛒', color: '#EC4899' },
+  { name: 'Salary', icon: '💰', color: '#06B6D4' },
+  { name: 'Bills', icon: '🧾', color: '#F97316' },
+  { name: 'Education', icon: '📚', color: '#6366F1' },
+  { name: 'Other', icon: '📦', color: '#6B7280' },
+];
+
+export function getAvailableCategories() {
+  return DEFAULT_CATEGORY_PRESETS;
+}
+
+export async function register(email: string, name: string, password: string, categories?: string[]) {
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) {
     throw new AppError(409, 'DUPLICATE_EMAIL', 'A user with this email already exists');
@@ -41,8 +58,29 @@ export async function register(email: string, name: string, password: string) {
     data: { email, name, passwordHash },
   });
 
+  // Create selected categories for the user (or all defaults if none specified)
+  const selectedNames = categories && categories.length > 0
+    ? categories
+    : DEFAULT_CATEGORY_PRESETS.map((c) => c.name);
+
+  const categoriesToCreate = DEFAULT_CATEGORY_PRESETS.filter((c) =>
+    selectedNames.includes(c.name),
+  );
+
+  if (categoriesToCreate.length > 0) {
+    await prisma.category.createMany({
+      data: categoriesToCreate.map((c) => ({
+        name: c.name,
+        icon: c.icon,
+        color: c.color,
+        isDefault: false,
+        userId: user.id,
+      })),
+    });
+  }
+
   const tokens = await generateTokens(user.id, user.email);
-  logger.info({ userId: user.id }, 'User registered');
+  logger.info({ userId: user.id, categoryCount: categoriesToCreate.length }, 'User registered');
 
   return {
     accessToken: tokens.accessToken,

@@ -23,8 +23,8 @@ router.post(
   validate(registerSchema),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { email, name, password } = req.body;
-      const result = await authService.register(email, name, password);
+      const { email, name, password, categories } = req.body;
+      const result = await authService.register(email, name, password, categories);
 
       res.cookie('refreshToken', result.refreshToken, REFRESH_COOKIE_OPTIONS);
       res.status(201).json({
@@ -36,6 +36,10 @@ router.post(
     }
   },
 );
+
+router.get('/categories', (_req: Request, res: Response) => {
+  res.json({ success: true, data: authService.getAvailableCategories() });
+});
 
 router.post(
   '/login',

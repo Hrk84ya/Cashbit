@@ -5,6 +5,7 @@ import {
   Histogram,
   Counter,
 } from 'prom-client';
+import { authenticate } from './authenticate';
 
 export const register = new Registry();
 collectDefaultMetrics({ register });
@@ -53,7 +54,7 @@ export function metricsMiddleware(req: Request, res: Response, next: NextFunctio
 
 export const metricsRouter = Router();
 
-metricsRouter.get('/metrics', async (_req: Request, res: Response) => {
+metricsRouter.get('/metrics', authenticate, async (_req: Request, res: Response) => {
   try {
     res.set('Content-Type', register.contentType);
     res.end(await register.metrics());

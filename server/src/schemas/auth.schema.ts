@@ -5,6 +5,7 @@ export const registerSchema = {
     email: z.string().email('Invalid email format'),
     name: z.string().min(1, 'Name is required'),
     password: z.string().min(8, 'Password must be at least 8 characters'),
+    categories: z.array(z.string()).optional(),
   }),
 };
 
