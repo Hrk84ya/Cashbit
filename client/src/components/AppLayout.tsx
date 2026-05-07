@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { usePendingTransactions } from '../hooks/useRecurringRules';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { LayoutDashboard, Receipt, TrendingUp, PiggyBank, Tags, Sun, Moon, ChevronLeft, ChevronRight, Menu, LogOut, Settings, RefreshCw } from 'lucide-react';
@@ -29,6 +30,8 @@ export default function AppLayout() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [dark, toggleDark] = useDarkMode();
   const { user, logout } = useAuth();
+  const { data: pending } = usePendingTransactions();
+  const pendingCount = pending?.length ?? 0;
 
   return (
     <div className="min-h-screen flex bg-background">
@@ -63,6 +66,11 @@ export default function AppLayout() {
                 title={collapsed ? item.label : undefined}>
                 <item.icon className="h-5 w-5 shrink-0" />
                 {!collapsed && <span>{item.label}</span>}
+                {!collapsed && item.to === '/recurring' && pendingCount > 0 && (
+                  <span className="ml-auto bg-amber-500 text-white text-[10px] font-bold rounded-full h-5 min-w-5 flex items-center justify-center px-1">
+                    {pendingCount}
+                  </span>
+                )}
               </NavLink>
             ))}
           </nav>
@@ -125,6 +133,11 @@ export default function AppLayout() {
                 )}>
                 <item.icon className="h-5 w-5 shrink-0" />
                 <span>{item.label}</span>
+                {item.to === '/recurring' && pendingCount > 0 && (
+                  <span className="ml-auto bg-amber-500 text-white text-[10px] font-bold rounded-full h-5 min-w-5 flex items-center justify-center px-1">
+                    {pendingCount}
+                  </span>
+                )}
               </NavLink>
             ))}
           </nav>

@@ -13,6 +13,7 @@ async function checkMixedCurrency(
     where: {
       userId,
       deletedAt: null,
+      isConfirmed: true,
       date: { gte: start, lt: end },
     },
     distinct: ['currency'],
@@ -28,10 +29,10 @@ export async function getSummary(userId: string, monthYear: string) {
 
   await checkMixedCurrency(userId, start, end);
 
-  // Income/Expense totals via groupBy
+  // Income/Expense totals via groupBy (only confirmed transactions)
   const totals = await prisma.transaction.groupBy({
     by: ['type'],
-    where: { userId, deletedAt: null, date: { gte: start, lt: end } },
+    where: { userId, deletedAt: null, isConfirmed: true, date: { gte: start, lt: end } },
     _sum: { amount: true },
   });
 
@@ -42,7 +43,7 @@ export async function getSummary(userId: string, monthYear: string) {
   // Category breakdown for expenses
   const categoryBreakdown = await prisma.transaction.groupBy({
     by: ['categoryId'],
-    where: { userId, type: 'EXPENSE', deletedAt: null, date: { gte: start, lt: end } },
+    where: { userId, type: 'EXPENSE', deletedAt: null, isConfirmed: true, date: { gte: start, lt: end } },
     _sum: { amount: true },
   });
 
@@ -78,7 +79,7 @@ export async function getSummary(userId: string, monthYear: string) {
 
   const prevTotals = await prisma.transaction.groupBy({
     by: ['type'],
-    where: { userId, deletedAt: null, date: { gte: prevStart, lt: prevEnd } },
+    where: { userId, deletedAt: null, isConfirmed: true, date: { gte: prevStart, lt: prevEnd } },
     _sum: { amount: true },
   });
 
@@ -136,6 +137,7 @@ export async function getTrends(
         AND date >= ${start}
         AND date < ${end}
         AND "deletedAt" IS NULL
+        AND "isConfirmed" = true
         ${categoryFilter}
       GROUP BY period, type
       ORDER BY period ASC

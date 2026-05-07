@@ -28,13 +28,14 @@ export async function listForMonth(userId: string, monthYear: string) {
     include: { category: true },
   });
 
-  // Compute spent amount per category for this month from EXPENSE transactions
+  // Compute spent amount per category for this month from EXPENSE transactions (only confirmed)
   const spentAggregations = await prisma.transaction.groupBy({
     by: ['categoryId'],
     where: {
       userId,
       type: 'EXPENSE',
       deletedAt: null,
+      isConfirmed: true,
       date: { gte: start, lt: end },
       categoryId: { in: budgets.map((b) => b.categoryId) },
     },

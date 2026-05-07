@@ -13,6 +13,7 @@ import analyticsRoutes from './routes/analytics.routes';
 import profileRoutes from './routes/profile.routes';
 import uploadRoutes from './routes/upload.routes';
 import recurringRoutes from './routes/recurring.routes';
+import recurringRulesRoutes from './routes/recurring-rules.routes';
 
 const app = express();
 
@@ -34,6 +35,7 @@ app.use('/analytics', analyticsRoutes);
 app.use('/profile', profileRoutes);
 app.use('/uploads', uploadRoutes);
 app.use('/recurring', recurringRoutes);
+app.use('/recurring-rules', recurringRulesRoutes);
 app.use(metricsRouter);
 
 // Global error handler (must be last)

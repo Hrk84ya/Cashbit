@@ -1,12 +1,16 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { PieChart, Pie, Cell, Tooltip, Legend, AreaChart, Area, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
-import { TrendingUp, TrendingDown, Wallet, ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { TrendingUp, TrendingDown, Wallet, ArrowUpRight, ArrowDownRight, Check, X, Bell } from 'lucide-react';
 import { useSummary, useTrends } from '../hooks/useAnalytics';
+import { usePendingTransactions, useGeneratePending, useConfirmTransaction, useDismissTransaction, useConfirmAllPending } from '../hooks/useRecurringRules';
+import { useToast } from '../components/Toast';
 import MoneyDisplay from '../components/MoneyDisplay';
 import MonthSelector from '../components/MonthSelector';
 import { CardSkeleton, ChartSkeleton } from '../components/LoadingSkeleton';
 import EmptyState from '../components/EmptyState';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 
 function currentMonth(): string {
   const now = new Date();
@@ -28,6 +32,21 @@ export default function DashboardPage() {
   const { data: trends, isLoading: trendsLoading } = useTrends({ startDate: `${trendsStart}-01`, endDate: `${trendsEnd}-01`, groupBy: 'month' });
   const isEmpty = summary && summary.totalIncome === '0' && summary.totalExpenses === '0';
 
+  // Generate pending recurring transactions on dashboard load
+  const generatePending = useGeneratePending();
+  const { data: pending } = usePendingTransactions();
+  const confirmTx = useConfirmTransaction();
+  const dismissTx = useDismissTransaction();
+  const confirmAll = useConfirmAllPending();
+  const { showToast } = useToast();
+
+  useEffect(() => {
+    generatePending.mutate();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const pendingCount = pending?.length ?? 0;
+
   return (
     <div className="space-y-8 animate-fade-in">
       <div className="flex items-center justify-between flex-wrap gap-4">
@@ -37,6 +56,82 @@ export default function DashboardPage() {
         </div>
         <MonthSelector value={month} onChange={setMonth} />
       </div>
+
+      {/* Pending Recurring Transactions Banner */}
+      {pendingCount > 0 && (
+        <Card className="border-amber-200 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-950/20">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <Bell className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+                <span className="text-sm font-medium">
+                  {pendingCount} recurring transaction{pendingCount !== 1 ? 's' : ''} pending confirmation
+                </span>
+              </div>
+              <Button
+                size="sm"
+                variant="outline"
+                className="h-7 text-xs"
+                onClick={() => confirmAll.mutate(undefined, {
+                  onSuccess: (data) => showToast(`${data.confirmed} transactions confirmed`),
+                  onError: () => showToast('Failed to confirm', 'error'),
+                })}
+                disabled={confirmAll.isPending}
+              >
+                <Check className="h-3 w-3 mr-1" />
+                Confirm All
+              </Button>
+            </div>
+            <div className="space-y-2 max-h-48 overflow-y-auto">
+              {pending?.slice(0, 5).map((tx) => (
+                <div key={tx.id} className="flex items-center justify-between gap-2 text-sm">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <span
+                      className="w-6 h-6 rounded flex items-center justify-center text-xs shrink-0"
+                      style={{ backgroundColor: tx.category.color + '20', color: tx.category.color }}
+                    >
+                      {tx.category.icon}
+                    </span>
+                    <span className="truncate">{tx.description || tx.category.name}</span>
+                    <span className="text-xs text-muted-foreground shrink-0">
+                      {new Date(tx.date).toLocaleDateString('en-IN', { month: 'short', day: 'numeric' })}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <MoneyDisplay
+                      value={tx.amount}
+                      className={`text-xs font-medium ${tx.type === 'EXPENSE' ? 'text-destructive' : 'text-success'}`}
+                    />
+                    <button
+                      onClick={() => confirmTx.mutate(tx.id, {
+                        onSuccess: () => showToast('Confirmed'),
+                        onError: () => showToast('Failed', 'error'),
+                      })}
+                      className="h-6 w-6 rounded flex items-center justify-center hover:bg-success/10 text-success transition-colors"
+                    >
+                      <Check className="h-3.5 w-3.5" />
+                    </button>
+                    <button
+                      onClick={() => dismissTx.mutate(tx.id, {
+                        onSuccess: () => showToast('Dismissed'),
+                        onError: () => showToast('Failed', 'error'),
+                      })}
+                      className="h-6 w-6 rounded flex items-center justify-center hover:bg-destructive/10 text-destructive transition-colors"
+                    >
+                      <X className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+              {pendingCount > 5 && (
+                <a href="/recurring" className="text-xs text-primary hover:underline block pt-1">
+                  View all {pendingCount} pending →
+                </a>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {summaryLoading ? (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">

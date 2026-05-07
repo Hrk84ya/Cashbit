@@ -91,6 +91,7 @@ export async function list(userId: string, filters: ListFilters) {
   const where: Prisma.TransactionWhereInput = {
     userId,
     deletedAt: null,
+    isConfirmed: true,
   };
 
   if (filters.type) {
@@ -225,6 +226,7 @@ export async function exportCsv(userId: string, filters: ExportFilters, res: Res
   const where: Prisma.TransactionWhereInput = {
     userId,
     deletedAt: null,
+    isConfirmed: true,
   };
 
   if (filters.type) {
